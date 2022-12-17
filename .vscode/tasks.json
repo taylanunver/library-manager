@@ -1,0 +1,47 @@
+{
+  "tasks": [
+    {
+      "type": "cppbuild",
+      "label": "C/C++: g++.exe build active folder for debug",
+      "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+      "args": [
+        "-g3",
+        "${workspaceFolder}/src/*.cpp",
+        "-I",
+        "${workspaceFolder}/src/include",
+        "-o",
+        "${workspaceFolder}/build/${workspaceFolderBasename}-debug.exe",
+        "-std=c++20",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-O0"
+      ]
+    },
+    {
+      "type": "cppbuild",
+      "label": "C/C++: g++.exe build active folder for release",
+      "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+      "args": [
+        "${workspaceFolder}/src/*.cpp",
+        "-I",
+        "${workspaceFolder}/src/include",
+        "-o",
+        "${workspaceFolder}/build/${workspaceFolderBasename}-release.exe",
+        "-std=c++20",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-Wno-unused-variable",
+        "-Wno-unused-function",
+        "-Wno-unused-but-set-variable",
+        "-Wno-unused-but-set-parameter",
+        "-Wno-unused-result",
+        "-Ofast"
+      ]
+    }
+  ],
+  "version": "2.0.0"
+}
