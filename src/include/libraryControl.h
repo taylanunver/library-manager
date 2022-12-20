@@ -4,27 +4,31 @@
 #include <string>
 #include <vector>
 
+namespace libraryControl {
+
 class LibraryResource {
    public:
+    // constructor and destructor
     LibraryResource();
     virtual ~LibraryResource();
+    // getters
     virtual void getDetails() = 0;
-    int checkAvailability();
     int getTotalUnits();
+    int checkAvailability();
+    std::string getTitle();
+    // setters
+    void removeUnits(int units);
+    void setAvailableUnits(int units);
+    void setTitle(std::string title);
+    // other methods
     void checkOut();
     void returnResource();
     void addUnits(int units);
-    void removeUnits(int units);
-    void setLibraryId(int id);
-    void setAvailableUnits(int units);
-    void setTitle(std::string title);
-    std::string getTitle();
 
    protected:
     std::string title = "";
     int availableUnits = 0;
     int totalUnits = 0;
-    int libraryId;
 };
 
 class Book : public LibraryResource {
@@ -70,6 +74,7 @@ class Library {
     Library();
     virtual ~Library();
     void addResource(LibraryResource* resource);
+    void addResource();
     void removeResource(LibraryResource* resource, int units);
     void listResources();
 
@@ -92,10 +97,10 @@ class Library {
     std::string address;
     std::string phone;
     int id;
+    friend std::vector<LibraryResource*> searchResources(std::string&, Library*);
 };
 
-namespace libraryControl {
 int loadLibraries(std::string filename, std::vector<Library*>& libraries);
-}
-
+std::vector<LibraryResource*> searchResources(std::string& keyword, Library* library);
+}  // namespace libraryControl
 #endif  // LIBRARYCONTROL_H

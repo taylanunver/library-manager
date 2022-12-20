@@ -1,5 +1,7 @@
 #include "libraryControl.h"
+#include <algorithm>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -9,6 +11,8 @@
 #define BOOK 102
 #define PERIODICAL 103
 #define MULTIMEDIA 104
+
+namespace libraryControl {
 
 int getTokenType(std::string token) {
     if (token == "LIBRARY") {
@@ -23,13 +27,107 @@ int getTokenType(std::string token) {
         return 0;
     }
 }
+int loadLibraries(std::string filename, std::vector<Library*>& libraries) {
+    std::fstream file;
+
+    // check if file exists and create if not
+    file.open(filename, std::ios::in);
+    if (!file) {
+        file.open(filename, std::ios::out);
+    }
+    file.close();
+
+    // read file and create libraries
+    file.open(filename, std::ios::in);
+    if (file) {
+        std::string line;
+        Library* currentLibrary;
+        Book* currentBook;
+        // Periodical* tempPeriodical;
+        // Multimedia* tempMultimedia;
+        while (std::getline(file, line)) {
+            // sepeare line by delimiter
+            std::stringstream ss(line);
+            std::string token;
+            int readMode;
+            int column = 0;
+            while (std::getline(ss, token, '|')) {
+                if (column == 0) {
+                    readMode = getTokenType(token);
+                } else {
+                    switch (readMode) {
+                        case LIBRARY:
+                            switch (column) {
+                                case 1:
+                                    currentLibrary = new Library();
+                                    currentLibrary->setId(std::stoi(token));
+                                    break;
+                                case 2:
+                                    currentLibrary->setName(token);
+                                    break;
+                                case 3:
+                                    currentLibrary->setAddress(token);
+                                    break;
+                                case 4:
+                                    currentLibrary->setPhone(token);
+                                    libraries.push_back(currentLibrary);
+                                    break;
+                            }
+                            break;
+                        case BOOK:
+                            switch (column) {
+                                case 1:
+                                    currentBook = new Book();
+                                    currentBook->setTitle(token);
+                                    break;
+                                case 2:
+                                    currentBook->setAuthor(token);
+                                    break;
+                                case 3:
+                                    currentBook->setPublisher(token);
+                                    break;
+                                case 4:
+                                    currentBook->setDescription(token);
+                                    break;
+                                case 5:
+                                    currentBook->addUnits(std::stoi(token));
+                                    break;
+                                case 6:
+                                    currentBook->setAvailableUnits(std::stoi(token));
+                                    currentLibrary->addResource(currentBook);
+                                    break;
+                            }
+                    }
+                }
+                column++;
+            }
+        }
+        file.close();
+        return 0;
+    }
+    file.close();
+    return 1;
+}
+
+std::vector<LibraryResource*> searchResources(std::string& keyword, Library* library) {
+    std::vector<LibraryResource*> results;
+    std::string keywordLower = keyword;
+    std::transform(keywordLower.begin(), keywordLower.end(), keywordLower.begin(), std::bind(std::tolower<char>, std::placeholders::_1, std::locale()));
+    for (auto resource : library->resources) {
+        std::string titleLower = resource->getTitle();
+        std::transform(titleLower.begin(), titleLower.end(), titleLower.begin(), std::bind(std::tolower<char>, std::placeholders::_1, std::locale()));
+        if (titleLower.find(keywordLower) != std::string::npos) {
+            results.push_back(resource);
+        }
+    }
+    return results;
+}
 
 // LibraryResource constructors
 
 LibraryResource::LibraryResource() {
     this->availableUnits = 0;
     this->totalUnits = 0;
-    this->libraryId = 0;
 }
 
 // LibraryResource getters
@@ -50,10 +148,6 @@ int LibraryResource::checkAvailability() {
 
 void LibraryResource::setTitle(std::string title) {
     this->title = title;
-}
-
-void LibraryResource::setLibraryId(int id) {
-    this->libraryId = id;
 }
 
 void LibraryResource::addUnits(int units) {
@@ -141,8 +235,33 @@ void Library::setId(int id) {
 // Library methods
 
 void Library::addResource(LibraryResource* resource) {
-    resource->setLibraryId(this->id);
     resources.push_back(resource);
+}
+
+void Library::addResource() {
+    std::string title;
+    std::string author;
+    std::string publisher;
+    std::string description;
+    int units;
+    std::cout << "Enter title: ";
+    std::getline(std::cin, title);
+    std::cout << "Enter author: ";
+    std::getline(std::cin, author);
+    std::cout << "Enter publisher: ";
+    std::getline(std::cin, publisher);
+    std::cout << "Enter description: ";
+    std::getline(std::cin, description);
+    std::cout << "Enter units: ";
+    std::cin >> units;
+    Book* book = new Book();
+    book->setTitle(title);
+    book->setAuthor(author);
+    book->setPublisher(publisher);
+    book->setDescription(description);
+    book->addUnits(units);
+    book->setAvailableUnits(units);
+    resources.push_back(book);
 }
 
 void Library::listResources() {
@@ -151,89 +270,4 @@ void Library::listResources() {
     }
 }
 
-namespace libraryControl {
-int loadLibraries(std::string filename, std::vector<Library*>& libraries) {
-    std::fstream file;
-
-    // check if file exists and create if not
-    file.open(filename, std::ios::in);
-    if (!file) {
-        file.open(filename, std::ios::out);
-    }
-    file.close();
-
-    // read file and create libraries
-    file.open(filename, std::ios::in);
-    if (file) {
-        std::string line;
-        Library* currentLibrary;
-        Book* currentBook;
-        // Periodical* tempPeriodical;
-        // Multimedia* tempMultimedia;
-        while (std::getline(file, line)) {
-            // sepeare line by delimiter
-            std::stringstream ss(line);
-            std::string token;
-            int readMode;
-            int column = 0;
-            while (std::getline(ss, token, '|')) {
-                if (column == 0) {
-                    readMode = getTokenType(token);
-                } else {
-                    switch (readMode) {
-                        case LIBRARY:
-                            switch (column) {
-                                case 1:
-                                    currentLibrary = new Library();
-                                    currentLibrary->setId(std::stoi(token));
-                                    break;
-                                case 2:
-                                    currentLibrary->setName(token);
-                                    break;
-                                case 3:
-                                    currentLibrary->setAddress(token);
-                                    break;
-                                case 4:
-                                    currentLibrary->setPhone(token);
-                                    libraries.push_back(currentLibrary);
-                                    break;
-                            }
-                            break;
-                        case BOOK:
-                            switch (column) {
-                                case 1:
-                                    currentBook = new Book();
-                                    currentBook->setLibraryId(std::stoi(token));
-                                    break;
-                                case 2:
-                                    currentBook->setTitle(token);
-                                    break;
-                                case 3:
-                                    currentBook->setAuthor(token);
-                                    break;
-                                case 4:
-                                    currentBook->setPublisher(token);
-                                    break;
-                                case 5:
-                                    currentBook->setDescription(token);
-                                    break;
-                                case 6:
-                                    currentBook->addUnits(std::stoi(token));
-                                    break;
-                                case 7:
-                                    currentBook->setAvailableUnits(std::stoi(token));
-                                    currentLibrary->addResource(currentBook);
-                                    break;
-                            }
-                    }
-                }
-                column++;
-            }
-        }
-        file.close();
-        return 0;
-    }
-    file.close();
-    return 1;
-}
 }  // namespace libraryControl
