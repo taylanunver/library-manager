@@ -1,10 +1,13 @@
 #ifndef LIBRARYCONTROL_H
 #define LIBRARYCONTROL_H
 
+#include <fstream>
 #include <string>
 #include <vector>
 
 namespace libraryControl {
+
+class Library;
 
 class LibraryResource {
    public:
@@ -24,53 +27,12 @@ class LibraryResource {
     void checkOut();
     void returnResource();
     void addUnits(int units);
-    friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
+    virtual void save(std::ofstream& file) = 0;
 
    protected:
     std::string title = "";
     int availableUnits = 0;
     int totalUnits = 0;
-};
-
-class Book : public LibraryResource {
-   public:
-    Book();
-    virtual ~Book();
-    void getDetails();
-    void setAuthor(std::string author);
-    void setPublisher(std::string publisher);
-    void setDescription(std::string description);
-
-   private:
-    std::string author;
-    std::string publisher;
-    std::string description;
-    friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
-};
-
-class Periodical : public LibraryResource {
-   public:
-    Periodical();
-    virtual ~Periodical();
-    void getDetails();
-
-   private:
-    std::string publisher;
-    std::string description;
-    friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
-};
-
-class Multimedia : public LibraryResource {
-   public:
-    Multimedia();
-    virtual ~Multimedia();
-    void getDetails();
-
-   private:
-    std::string publisher;
-    int duration;
-    std::string description;
-    friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
 };
 
 class Library {
@@ -86,7 +48,6 @@ class Library {
     std::string getName();
     std::string getAddress();
     std::string getPhone();
-    int getId();
 
     // setters
     void setName(std::string name);
@@ -102,11 +63,53 @@ class Library {
     std::string phone;
     int id;
     friend std::vector<LibraryResource*> searchResources(std::string&, Library*);
-    friend int saveLibraries(std::string& filename, std::vector<Library*>&1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000 libraries);
+    friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
+};
+
+class Book : public LibraryResource {
+   public:
+    Book();
+    virtual ~Book();
+    void getDetails();
+    void setAuthor(std::string author);
+    void setPublisher(std::string publisher);
+    void setDescription(std::string description);
+    virtual void save(std::ofstream& file);
+
+   private:
+    std::string author;
+    std::string publisher;
+    std::string description;
+};
+
+class Periodical : public LibraryResource {
+   public:
+    Periodical();
+    virtual ~Periodical();
+    void getDetails();
+    virtual void save(std::ofstream& file);
+
+   private:
+    std::string publisher;
+    std::string description;
+};
+
+class Multimedia : public LibraryResource {
+   public:
+    Multimedia();
+    virtual ~Multimedia();
+    void getDetails();
+    virtual void save(std::ofstream& file);
+
+   private:
+    std::string publisher;
+    int duration;
+    std::string description;
+    friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
 };
 
 int loadLibraries(std::string, std::vector<Library*>&);
 std::vector<LibraryResource*> searchResources(std::string& keyword, Library* library);
-int saveLibraries(std::string& filename, std::vector<Library*>&1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000 libraries);
+int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
 }  // namespace libraryControl
 #endif  // LIBRARYCONTROL_H

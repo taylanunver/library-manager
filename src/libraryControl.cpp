@@ -109,24 +109,14 @@ int loadLibraries(std::string filename, std::vector<Library*>& libraries) {
     return 1;
 }
 
-int saveLibraries(std::string& filename, std::vector<Library*>& libraries){
-    std::fstream file;
-    file.open(filename, std::ios::out);
+int saveLibraries(std::string& filename, std::vector<Library*>& libraries) {
+    std::ofstream file;
+    file.open(filename);
     if (file) {
         for (auto library : libraries) {
-            file << "LIBRARY|" << library->getId() << "|" << library->getName() << "|" << library->getAddress() << "|" << library->getPhone() << std::endl;
+            file << "LIBRARY|" << library->id << "|" << library->name << "|" << library->address << "|" << library->phone << std::endl;
             for (auto resource : library->resources) {
-                switch(typeid(resource).hash_code()) {
-                    case typeid(Book).hash_code():
-                        file << "BOOK|" << resource->title << "|" << resource->author << "|" << resource->publisher << "|" << resource->description << "|" << resource->totalUnits << "|" <<  resource->availableUnits << std::endl;
-                        break;
-                    case typeid(Periodical).hash_code():
-                        file << "PERIODICAL|" << resource->getTitle() << "|" << resource->getTotalUnits() << "|" << resource->checkAvailability() << std::endl;
-                        break;
-                    case typeid(Multimedia).hash_code():
-                        file << "MULTIMEDIA|" << resource->getTitle() << "|" << resource->getTotalUnits() << "|" << resource->checkAvailability() << std::endl;
-                        break;
-                }
+                resource->save(file);
             }
         }
         file.close();
@@ -218,6 +208,10 @@ void Book::getDetails() {
     std::cout << "Description: " << description << std::endl;
 }
 
+void Book::save(std::ofstream& file) {
+    file << "BOOK|" << title << "|" << author << "|" << publisher << "|" << description << "|" << totalUnits << "|" << availableUnits << std::endl;
+}
+
 LibraryResource::~LibraryResource() {}
 Book::~Book() {}
 Library::Library() {}
@@ -235,10 +229,6 @@ std::string Library::getAddress() {
 
 std::string Library::getPhone() {
     return phone;
-}
-
-int Library::getId() {
-    return id;
 }
 
 // Library setters
@@ -292,6 +282,9 @@ void Library::addResource() {
 }
 
 void Library::listResources() {
+    system("cls");
+    std::cout << name << std::endl;
+    std::cout << "====================" << std::endl;
     for (auto resource : resources) {
         std::cout << resource->getTitle() << std::endl;
     }
