@@ -55,5 +55,9 @@ int main(int argc, char* argv[]) {
             askUser("Select a resource", options);
             break;
     }
+    if(libraryControl::saveLibraries(filename, libraries)) {
+        std::cout << "Error saving libraries" << std::endl;
+        return 1;
+    }
     return 0;
 }

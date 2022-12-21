@@ -24,6 +24,7 @@ class LibraryResource {
     void checkOut();
     void returnResource();
     void addUnits(int units);
+    friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
 
    protected:
     std::string title = "";
@@ -44,6 +45,7 @@ class Book : public LibraryResource {
     std::string author;
     std::string publisher;
     std::string description;
+    friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
 };
 
 class Periodical : public LibraryResource {
@@ -55,6 +57,7 @@ class Periodical : public LibraryResource {
    private:
     std::string publisher;
     std::string description;
+    friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
 };
 
 class Multimedia : public LibraryResource {
@@ -67,6 +70,7 @@ class Multimedia : public LibraryResource {
     std::string publisher;
     int duration;
     std::string description;
+    friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
 };
 
 class Library {
@@ -98,9 +102,11 @@ class Library {
     std::string phone;
     int id;
     friend std::vector<LibraryResource*> searchResources(std::string&, Library*);
+    friend int saveLibraries(std::string& filename, std::vector<Library*>&1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000 libraries);
 };
 
-int loadLibraries(std::string filename, std::vector<Library*>& libraries);
+int loadLibraries(std::string, std::vector<Library*>&);
 std::vector<LibraryResource*> searchResources(std::string& keyword, Library* library);
+int saveLibraries(std::string& filename, std::vector<Library*>&1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000 libraries);
 }  // namespace libraryControl
 #endif  // LIBRARYCONTROL_H

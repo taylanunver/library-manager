@@ -109,6 +109,33 @@ int loadLibraries(std::string filename, std::vector<Library*>& libraries) {
     return 1;
 }
 
+int saveLibraries(std::string& filename, std::vector<Library*>& libraries){
+    std::fstream file;
+    file.open(filename, std::ios::out);
+    if (file) {
+        for (auto library : libraries) {
+            file << "LIBRARY|" << library->getId() << "|" << library->getName() << "|" << library->getAddress() << "|" << library->getPhone() << std::endl;
+            for (auto resource : library->resources) {
+                switch(typeid(resource).hash_code()) {
+                    case typeid(Book).hash_code():
+                        file << "BOOK|" << resource->title << "|" << resource->author << "|" << resource->publisher << "|" << resource->description << "|" << resource->totalUnits << "|" <<  resource->availableUnits << std::endl;
+                        break;
+                    case typeid(Periodical).hash_code():
+                        file << "PERIODICAL|" << resource->getTitle() << "|" << resource->getTotalUnits() << "|" << resource->checkAvailability() << std::endl;
+                        break;
+                    case typeid(Multimedia).hash_code():
+                        file << "MULTIMEDIA|" << resource->getTitle() << "|" << resource->getTotalUnits() << "|" << resource->checkAvailability() << std::endl;
+                        break;
+                }
+            }
+        }
+        file.close();
+        return 0;
+    }
+    file.close();
+    return 1;
+}
+
 std::vector<LibraryResource*> searchResources(std::string& keyword, Library* library) {
     std::vector<LibraryResource*> results;
     std::string keywordLower = keyword;
