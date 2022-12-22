@@ -4,12 +4,17 @@
 #include <string>
 #include <vector>
 
-int askUser(std::string question, std::vector<std::string>& options) {
+int askUser(std::string question, std::vector<std::string>& options, bool addBack) {
     system("cls");
-    std::cout << question << std::endl;
+    if (addBack) {
+        options.push_back("Back");
+    }
     for (unsigned long long i = 0; i < options.size(); i++) {
         std::cout << '[' << i + 1 << "] " << options[i] << std::endl;
     }
+    std::cout << "====================";
+    std::cout << std::endl;
+    std::cout << question << std::endl;
     std::cout << "Enter your choice: ";
     std::string choice;
     while (true) {
@@ -26,6 +31,12 @@ int askUser(std::string question, std::vector<std::string>& options) {
         }
         std::cout << "Invalid choice. Please try again: ";
     }
-
+    if (addBack && std::stoull(choice) == options.size()) {
+        options.clear();
+        system("cls");
+        return BACK;
+    }
+    options.clear();
+    system("cls");
     return std::stoi(choice) - 1;
 }

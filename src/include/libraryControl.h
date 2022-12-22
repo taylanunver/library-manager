@@ -24,7 +24,7 @@ class LibraryResource {
     void setAvailableUnits(int units);
     void setTitle(std::string title);
     // other methods
-    void checkOut();
+    int checkOut();
     void returnResource();
     void addUnits(int units);
     virtual void save(std::ofstream& file) = 0;
@@ -43,11 +43,13 @@ class Library {
     void addResource();
     void removeResource(LibraryResource* resource, int units);
     void listResources();
+    LibraryResource* getResource(unsigned long long);
 
     // getters
     std::string getName();
     std::string getAddress();
     std::string getPhone();
+    std::vector<std::string> getResourceTitles();
 
     // setters
     void setName(std::string name);
@@ -111,5 +113,7 @@ class Multimedia : public LibraryResource {
 int loadLibraries(std::string, std::vector<Library*>&);
 std::vector<LibraryResource*> searchResources(std::string& keyword, Library* library);
 int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
+int askUserResource(LibraryResource*);
+void addLibrary(std::vector<Library*>& libraries);
 }  // namespace libraryControl
 #endif  // LIBRARYCONTROL_H

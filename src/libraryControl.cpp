@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "userInteractions.h"
 
 #define LIBRARY 101
 #define BOOK 102
@@ -27,6 +28,7 @@ int getTokenType(std::string token) {
         return 0;
     }
 }
+
 int loadLibraries(std::string filename, std::vector<Library*>& libraries) {
     std::fstream file;
 
@@ -147,6 +149,8 @@ LibraryResource::LibraryResource() {
     this->totalUnits = 0;
 }
 
+LibraryResource::~LibraryResource() {}
+
 // LibraryResource getters
 
 std::string LibraryResource::getTitle() {
@@ -160,7 +164,6 @@ int LibraryResource::getTotalUnits() {
 int LibraryResource::checkAvailability() {
     return availableUnits;
 }
-
 // LibraryResource setters
 
 void LibraryResource::setTitle(std::string title) {
@@ -176,6 +179,48 @@ void LibraryResource::setAvailableUnits(int units) {
     this->availableUnits = units;
 }
 
+int LibraryResource::checkOut() {
+    if (availableUnits > 0) {
+        availableUnits--;
+        return 0;
+    }
+    return 1;
+}
+
+void LibraryResource::returnResource() {
+    if (availableUnits < totalUnits) {
+        availableUnits++;
+    } else {
+        std::cout << "All units are available" << std::endl;
+        std::cin.ignore();
+    }
+}
+
+int askUserResource(LibraryResource* resource) {
+    if (resource == nullptr) {
+        return BACK_2;
+    }
+    std::vector<std::string> options;
+    options.push_back("Borrow");
+    options.push_back("Return");
+    options.push_back("Details");
+    int choice = askUser(resource->getTitle(), options);
+    switch (choice) {
+        case 0:
+            resource->checkOut();
+            break;
+        case 1:
+            resource->returnResource();
+            break;
+        case 2:
+            resource->getDetails();
+            break;
+        case BACK:
+            return BACK;
+    }
+    return 0;
+}
+
 // Book constructors
 
 Book::Book() {
@@ -184,6 +229,8 @@ Book::Book() {
     this->publisher = "";
     this->description = "";
 }
+
+Book::~Book() {}
 
 // Book setters
 
@@ -206,14 +253,15 @@ void Book::getDetails() {
     std::cout << "Author: " << author << std::endl;
     std::cout << "Publisher: " << publisher << std::endl;
     std::cout << "Description: " << description << std::endl;
+    std::cin.ignore();
 }
 
 void Book::save(std::ofstream& file) {
     file << "BOOK|" << title << "|" << author << "|" << publisher << "|" << description << "|" << totalUnits << "|" << availableUnits << std::endl;
 }
 
-LibraryResource::~LibraryResource() {}
-Book::~Book() {}
+// Library constructors
+
 Library::Library() {}
 Library::~Library() {}
 
@@ -229,6 +277,14 @@ std::string Library::getAddress() {
 
 std::string Library::getPhone() {
     return phone;
+}
+
+std::vector<std::string> Library::getResourceTitles() {
+    std::vector<std::string> titles;
+    for (auto resource : resources) {
+        titles.push_back(resource->getTitle());
+    }
+    return titles;
 }
 
 // Library setters
@@ -290,4 +346,27 @@ void Library::listResources() {
     }
 }
 
+LibraryResource* Library::getResource(unsigned long long int index) {
+    if (index >= resources.size()) {
+        return nullptr;
+    }
+    return resources[index];
+}
+void addLibrary(std::vector<Library*>& libraries) {
+    std::string name;
+    std::string address;
+    std::string phone;
+    std::cout << "Enter name: ";
+    std::getline(std::cin, name);
+    std::cout << "Enter address: ";
+    std::getline(std::cin, address);
+    std::cout << "Enter phone: ";
+    std::getline(std::cin, phone);
+    Library* library = new Library();
+    library->setName(name);
+    library->setAddress(address);
+    library->setPhone(phone);
+    library->setId(libraries.size());
+    libraries.push_back(library);
+}
 }  // namespace libraryControl

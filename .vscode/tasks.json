@@ -1,6 +1,12 @@
 {
   "tasks": [
     {
+      "label": "Compare Source and Compiled Files",
+      "type": "shell",
+      "command": "fc /b ${workspaceFolder}\\src\\*.cpp ${workspaceFolder}\\build\\*.obj",
+      "problemMatcher": []
+    },
+    {
       "type": "cppbuild",
       "label": "C/C++: g++.exe build active folder for debug",
       "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
