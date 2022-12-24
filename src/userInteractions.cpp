@@ -10,12 +10,12 @@ int askUser(std::string question, std::vector<std::string>& options, bool addBac
         options.push_back("Back");
     }
     for (unsigned long long i = 0; i < options.size(); i++) {
-        std::cout << '[' << i + 1 << "] " << options[i] << std::endl;
+        std::cerr << '[' << i + 1 << "] " << options[i] << std::endl;
     }
-    std::cout << "====================";
-    std::cout << std::endl;
-    std::cout << question << std::endl;
-    std::cout << "Enter your choice: ";
+    std::cerr << "====================";
+    std::cerr << std::endl;
+    std::cerr << question << std::endl;
+    std::cerr << "Enter your choice: ";
     std::string choice;
     while (true) {
         std::getline(std::cin, choice);
@@ -29,7 +29,7 @@ int askUser(std::string question, std::vector<std::string>& options, bool addBac
         } catch (const std::out_of_range& e) {
             // do nothing, just continue the loop
         }
-        std::cout << "Invalid choice. Please try again: ";
+        std::cerr << "Invalid choice. Please try again: ";
     }
     if (addBack && std::stoull(choice) == options.size()) {
         options.clear();

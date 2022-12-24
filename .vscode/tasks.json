@@ -38,14 +38,45 @@
         "-Wall",
         "-Wextra",
         "-Wpedantic",
-        "-Werror",
-        "-Wno-unused-parameter",
-        "-Wno-unused-variable",
-        "-Wno-unused-function",
-        "-Wno-unused-but-set-variable",
-        "-Wno-unused-but-set-parameter",
-        "-Wno-unused-result",
         "-Ofast"
+      ]
+    },
+    {
+      "type": "cppbuild",
+      "label": "C/C++: MSVC build active folder for debug",
+      "command": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+      "args": [
+        "-g3",
+        "${workspaceFolder}/src/*.cpp",
+        "-I",
+        "${workspaceFolder}/src/include",
+        "-o",
+        "${workspaceFolder}/build/${workspaceFolderBasename}-debug-msvc.exe",
+        "-std=c++20",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-O0"
+      ]
+    },
+    {
+      "type": "cppbuild",
+      "label": "C/C++: MSVC build active folder for release",
+      "command": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cl.exe",
+      "args": [
+        "${workspaceFolder}/src/*.cpp",
+        "/I",
+        "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.34.31933\\include",
+        "/I",
+        "C:\\vcpkg\\installed\\x64-windows\\include",
+        "/I",
+        "${workspaceFolder}/src/include",
+        "/Fe",
+        "${workspaceFolder}/build/${workspaceFolderBasename}-release-msvc.exe",
+        "/std:c++20",
+        "/W4",
+        "/WX",
+        "/O2"
       ]
     }
   ],

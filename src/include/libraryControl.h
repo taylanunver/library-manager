@@ -17,14 +17,13 @@ class LibraryResource {
     // getters
     virtual void getDetails() = 0;
     int getTotalUnits();
-    int checkAvailability();
-    std::string getTitle();
+    virtual std::string getTitle();
     // setters
     void removeUnits(int units);
     void setAvailableUnits(int units);
     void setTitle(std::string title);
     // other methods
-    int checkOut();
+    void checkOut();
     void returnResource();
     void addUnits(int units);
     virtual void save(std::ofstream& file) = 0;
@@ -64,7 +63,7 @@ class Library {
     std::string address;
     std::string phone;
     int id;
-    friend std::vector<LibraryResource*> searchResources(std::string&, Library*);
+    friend std::vector<LibraryResource*> searchResources(const std::string&, Library*);
     friend int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
 };
 
@@ -89,11 +88,16 @@ class Periodical : public LibraryResource {
     Periodical();
     virtual ~Periodical();
     void getDetails();
+    void setPublisher(std::string publisher);
+    void setDescription(std::string description);
+    void setIssue(int issue);
     virtual void save(std::ofstream& file);
+    std::string getTitle();
 
    private:
     std::string publisher;
     std::string description;
+    int issue;
 };
 
 class Multimedia : public LibraryResource {
@@ -101,6 +105,9 @@ class Multimedia : public LibraryResource {
     Multimedia();
     virtual ~Multimedia();
     void getDetails();
+    void setPublisher(std::string publisher);
+    void setDescription(std::string description);
+    void setDuration(int duration);
     virtual void save(std::ofstream& file);
 
    private:
@@ -111,9 +118,12 @@ class Multimedia : public LibraryResource {
 };
 
 int loadLibraries(std::string, std::vector<Library*>&);
-std::vector<LibraryResource*> searchResources(std::string& keyword, Library* library);
+std::vector<LibraryResource*> searchResources(const std::string& keyword, Library* library);
 int saveLibraries(std::string& filename, std::vector<Library*>& libraries);
 int askUserResource(LibraryResource*);
 void addLibrary(std::vector<Library*>& libraries);
+Book* addBook();
+Periodical* addPeriodical();
+Multimedia* addMultimedia();
 }  // namespace libraryControl
 #endif  // LIBRARYCONTROL_H

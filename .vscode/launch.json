@@ -22,6 +22,25 @@
           "ignoreFailures": true
         }
       ]
+    },
+    {
+      "program": "${workspaceFolder}/build/${workspaceFolderBasename}-debug.exe",
+      "externalConsole": false,
+      "name": "C++ Build and Debug (MSVC)",
+      "type": "cppdbg",
+      "request": "launch",
+      "preLaunchTask": "C/C++: MSVC build active folder for debug",
+      "miDebuggerPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.34.31933\\bin\\Hostx64\\x64\\cdb.exe",
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
     }
   ]
 }
